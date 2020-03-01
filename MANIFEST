@@ -3,5 +3,4 @@ MANIFEST.SKIP
 Makefile.PL
 README
 bin/markpod.pl
-t/01_load.t
 LICENSE                                  
