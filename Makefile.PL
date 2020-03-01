@@ -15,7 +15,9 @@ my %WriteMakefile=(
     AUTHOR              => 'Andrew Speer <andrew.speer@isolutions.com.au>',
     MIN_PERL_VERSION	=> '5.006',
     PREREQ_PM           =>  {
-        'Test::Simple'  =>  0.44
+        'Test::Simple'  =>  0.44,
+		'Markdown::Pod'	=>  undef,
+		'PPI'			=>  undef,
     },
     META_MERGE => { 
         'meta-spec'     => {
