@@ -44,7 +44,7 @@ use constant {
 
     OPTION_AR		=> [
     
-        qw(help man version verbose quiet),
+        qw(man verbose quiet),
         'dialect=s',
         'inplace|i',
         'infile_ar|file|fn|f|in=s@',
@@ -311,7 +311,7 @@ Andrew Speer <andrew.speer@isolutions.com.au>
 
 =head1 NAME
 
-markpod.pl -- convert markdown formatted pod to pure pod
+markpod -- convert markdown formatted pod to pure pod
 
 
 =head1 SYNOPSIS
