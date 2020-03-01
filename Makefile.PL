@@ -30,15 +30,6 @@ my %WriteMakefile=(
             }
         }
     },
-    PM_FILTER		=> $ENV{'PM_DEBUG'} || do {
-	use IO::File;
-        my $fn='.pm_filter.pf';
-        my $fh=IO::File->new($fn, O_WRONLY|O_CREAT|O_TRUNC) ||
-            die ("unable to write filter file '$fn', $!");
-        print $fh 's/^(\s*)debug\\(/${1}0 && debug\\(/m; print';
-        $fh->close();
-        my $pm_filter="\$(PERL) -nl $fn";
-    },
     'depend'            => {
         Makefile        => '$(VERSION_FROM)',
     },
