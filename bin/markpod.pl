@@ -42,8 +42,8 @@ use Markdown::Pod;
 #
 use constant {
 
-    OPTION_AR		=> [
-    
+    OPTION_AR => [
+
         qw(man verbose quiet),
         'dialect=s',
         'inplace|i',
@@ -52,13 +52,13 @@ use constant {
         'extract|noconvert|md|markdown',
         'nobackup'
     ],
-        
-    OPTION_HR	=> {
-        dialect         =>      'GitHub',
-        inplace         =>      1,
-        %{do(glob("~/.${Script}.option")) || {}} # || {} avoids warning
+
+    OPTION_HR => {
+        dialect => 'GitHub',
+        inplace => 1,
+        %{do(glob("~/.${Script}.option")) || {}}    # || {} avoids warning
     },
-    
+
     OPTION_ENV_PREFIX => 'MARKPOD',
 
 };
@@ -66,23 +66,23 @@ use constant {
 
 #  Version Info, must be all one line for MakeMaker, CPAN.
 #
-$VERSION = '0.004';
+$VERSION='0.004';
 
 
 #  Run main
 #
-exit ${&main(&getopt(\@ARGV)) || die err()};
+exit ${&main(&getopt(\@ARGV)) || die err ()};
 
 
 #===================================================================================================
 
 
-sub main {
+sub main { #no subsort
 
     #  Get argv array ref and bless
     #
     my $self=bless(shift());
-    
+
 
     #  Iterate over infiles
     #
@@ -92,55 +92,23 @@ sub main {
         #  Sanity check on file name
         #
         unless (-f $fn) {
-            return err("file $fn not found");
+            return err ("file $fn not found");
         }
-        
+
 
         #  Do it
         #
         $self->markpod($fn) ||
-            return err("unknown error processing file $fn");
-        
-        
+            return err ("unknown error processing file $fn");
+
+
     }
-    
-    
+
+
     #  Done
     #
     return \undef;
-    
 
-
-}    
-
-
-sub getopt {
-
-    
-    #  ARGV usually supplied as array ref but could be anyting
-    #
-    my $opt_ar=shift() || \@ARGV;
-
-
-    #  Base options will pass to compile. Get option defauts from ENV or Constant/options file
-    #
-    my %opt=(
-    
-        map { $_ => $ENV{sprintf("%s_%s", +OPTION_ENV_PREFIX, uc($_)) }  || +OPTION_HR->{$_} } keys %{+OPTION_HR}
-
-    );
-
-
-    #  Now import command line options. 
-    #
-    GetOptionsFromArray($opt_ar, \%opt, @{+OPTION_AR}, ''=>\${opt{'stdin'}}, '<>'=>sub { push @{$opt{'infile_ar'}}, shift().'' }) ||
-        pod2usage(2);
-    pod2usage(-verbose => 2) if $opt{'man'};
-    
-    
-    #  Done
-    #
-    return \%opt;
 
 }
 
@@ -149,7 +117,48 @@ sub err {
 
     eval 'require Carp';
     Carp::croak sprintf(shift, @_);
-    
+
+}
+
+
+sub getopt {
+
+
+    #  ARGV usually supplied as array ref but could be anyting
+    #
+    my $opt_ar=shift() || \@ARGV;
+
+
+    #  Base options will pass to compile. Get option defauts from ENV or Constant/options file
+    #
+    my %opt=(
+
+        map {$_ => $ENV{sprintf("%s_%s", +OPTION_ENV_PREFIX, uc($_))} || +OPTION_HR->{$_}} keys %{+OPTION_HR}
+
+    );
+
+
+    #  Now import command line options.
+    #
+    GetOptionsFromArray($opt_ar, \%opt, @{+OPTION_AR}, '' => \${opt {'stdin'}}, '<>' => sub {push @{$opt{'infile_ar'}}, shift() . ''}) ||
+        pod2usage(2);
+    pod2usage(-verbose => 2) if $opt{'man'};
+
+
+    #  Done
+    #
+    return \%opt;
+
+}
+
+
+sub markdown_extract {
+
+    my ($self, $pod)=@_;
+    my ($md)=($pod=~/^=begin markdown\s*$(.*?)^=end markdown\s*$/ms);
+    chomp $md;
+    return $md;
+
 }
 
 
@@ -164,7 +173,7 @@ sub markpod {
     #  Create new PPI documents from supplied file
     #
     my $ppi_doc_or=PPI::Document->new($fn) ||
-        return err("nable to create new PPI instance on file $fn");
+        return err ("nable to create new PPI instance on file $fn");
 
 
     #  Find Pod section and massage
@@ -177,16 +186,16 @@ sub markpod {
         $pod.="\n=cut\n";
         $pod_or->set_content($pod);
     }
-    
+
     #  Check if we just want Markdonw
     #
     if ($self->{'extract'}) {
-        my $fh=IO::File->new($self->{'outfile'}, O_WRONLY|O_TRUNC|O_CREAT) || *STDOUT;
+        my $fh=IO::File->new($self->{'outfile'}, O_WRONLY | O_TRUNC | O_CREAT) || *STDOUT;
         print $fh $md;
         return \undef;
     }
-    
-    
+
+
     #  Want POD - proceed
     #
     if (my $out_fn=$self->{'outfile'}) {
@@ -194,6 +203,7 @@ sub markpod {
     }
     elsif ($self->{'inplace'}) {
         File::Copy::copy($fn, "${fn}.bak") unless $self->{'nobackup'};
+
         #  Backup and save
         #
         $ppi_doc_or->save($fn);
@@ -201,7 +211,7 @@ sub markpod {
     else {
         print $ppi_doc_or->serialize;
     }
-    
+
     #  Done
     #
     return \undef;
@@ -210,22 +220,13 @@ sub markpod {
 }
 
 
-sub markdown_extract {
-
-    my ($self, $pod)=@_;
-    my ($md)=($pod=~/^=begin markdown\s*$(.*?)^=end markdown\s*$/ms);
-    chomp $md;
-    return $md;
-    
-}
-
-
 sub markpod_parse {
 
     my ($self, $md)=@_;
     my $md2pod_or=Markdown::Pod->new;
-    my $pod=$md2pod_or->markdown_to_pod(dialect=>$self->{'dialect'}, markdown => $md);
-    $pod=join("\n",
+    my $pod=$md2pod_or->markdown_to_pod(dialect => $self->{'dialect'}, markdown => $md);
+    $pod=join(
+        "\n",
         '=begin markdown',
         $md,
         '=end markdown',
@@ -235,7 +236,7 @@ sub markpod_parse {
 
 }
 
-    
+
 __END__
 
 
