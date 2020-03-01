@@ -3,4 +3,5 @@ MANIFEST.SKIP
 Makefile.PL
 README
 bin/markpod.pl
+cpanfile
 LICENSE                                  
