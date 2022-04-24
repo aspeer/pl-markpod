@@ -66,7 +66,7 @@ use constant {
 
 #  Version Info, must be all one line for MakeMaker, CPAN.
 #
-$VERSION='0.006';
+$VERSION='0.007';
 #use App::markpod qw(main getopt);
 
 #  Run main
@@ -397,16 +397,14 @@ Andrew Speer L<mailto:andrew.speer@isolutions.com.au>
 
 =head1 LICENSE and COPYRIGHT
 
-This software is copyright (c) 2022 by Andrew Speer L<mailto:andrew.speer@isolutions.com.au>.
+This file is part of markpod.
+
+This software is copyright (c) 2022 by Andrew Speer <andrew.speer@isolutions.com.au>.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-Terms of the Perl programming language system itself
-
-a) the GNU General Public License as published by the Free
-   Software Foundation; either version 1, or (at your option) any
-   later version, or
-b) the "Artistic License"
+Full license text is available at:
+L<http://dev.perl.org/licenses/>
 
 =cut
