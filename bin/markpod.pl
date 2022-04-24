@@ -3,7 +3,7 @@
 #
 #  This file is part of markpod.
 #
-#  This software is copyright (c) 2020 by Andrew Speer <andrew.speer@isolutions.com.au>.
+#  This software is copyright (c) 2022 by Andrew Speer <andrew.speer@isolutions.com.au>.
 #
 #  This is free software; you can redistribute it and/or modify it under
 #  the same terms as the Perl 5 programming language system itself.
@@ -16,9 +16,9 @@
 
 #  Compiler pragma
 #
-use strict qw(vars);
+use strict;
 use vars qw($VERSION);
-
+use warnings;
 
 #  Base external modules
 #
@@ -67,17 +67,17 @@ use constant {
 #  Version Info, must be all one line for MakeMaker, CPAN.
 #
 $VERSION='0.005';
-
+#use App::markpod qw(main getopt);
 
 #  Run main
 #
 exit ${&main(&getopt(\@ARGV)) || die err ()};
 
-
+__END__
 #===================================================================================================
 
 
-sub main { #no subsort
+sub main {    #no subsort
 
     #  Get argv array ref and bless
     #
@@ -236,7 +236,7 @@ sub markpod_parse {
 
 }
 
-
+1;
 __END__
 
 
@@ -244,7 +244,7 @@ __END__
 
 # NAME
 
-markpod -- convert markdown formatted pod to pure pod
+markpod - convert markdown formatted pod to pure pod
 
 # SYNOPSIS
 
@@ -308,11 +308,26 @@ Once markpod is run it would be converted to the following.
 
 Andrew Speer <andrew.speer@isolutions.com.au>
 
+# LICENSE and COPYRIGHT
+
+This software is copyright (c) 2022 by Andrew Speer <andrew.speer@isolutions.com.au>.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+Terms of the Perl programming language system itself
+
+a) the GNU General Public License as published by the Free
+   Software Foundation; either version 1, or (at your option) any
+   later version, or
+b) the "Artistic License"
+
+
 =end markdown
 
 =head1 NAME
 
-markpod -- convert markdown formatted pod to pure pod
+markpod - convert markdown formatted pod to pure pod
 
 
 =head1 SYNOPSIS
@@ -377,6 +392,21 @@ Once markpod is run it would be converted to the following.
 
 =head1 AUTHOR
 
-Andrew Speer 
+Andrew Speer L<mailto:andrew.speer@isolutions.com.au>
+
+
+=head1 LICENSE and COPYRIGHT
+
+This software is copyright (c) 2022 by Andrew Speer L<mailto:andrew.speer@isolutions.com.au>.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+Terms of the Perl programming language system itself
+
+a) the GNU General Public License as published by the Free
+   Software Foundation; either version 1, or (at your option) any
+   later version, or
+b) the "Artistic License"
 
 =cut

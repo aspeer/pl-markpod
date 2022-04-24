@@ -1,7 +1,7 @@
 
 # NAME
 
-markpod -- convert markdown formatted pod to pure pod
+markpod - convert markdown formatted pod to pure pod
 
 # SYNOPSIS
 
@@ -64,3 +64,18 @@ Once markpod is run it would be converted to the following.
 # AUTHOR
 
 Andrew Speer <andrew.speer@isolutions.com.au>
+
+# LICENSE and COPYRIGHT
+
+This software is copyright (c) 2022 by Andrew Speer <andrew.speer@isolutions.com.au>.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+Terms of the Perl programming language system itself
+
+a) the GNU General Public License as published by the Free
+   Software Foundation; either version 1, or (at your option) any
+   later version, or
+b) the "Artistic License"
+

@@ -16,8 +16,8 @@ my %WriteMakefile=(
     MIN_PERL_VERSION	=> '5.006',
     PREREQ_PM           =>  {
         'Test::Simple'  =>  0.44,
-		'Markdown::Pod'	=>  undef,
-		'PPI'			=>  undef,
+		'Markdown::Pod'	        =>  0,
+		'PPI'			=>  0,
     },
     META_MERGE => { 
         'meta-spec'     => {
@@ -41,7 +41,7 @@ my %WriteMakefile=(
     },
 );
 my %MM_Compat=(
-    '5.46'				=> [q(PM_FILTER)],
+    '5.46'		=> [q(PM_FILTER)],
     '6.31'              => [q(LICENSE)],
     '6.46'              => [q(META_MERGE)],
     '6.48'              => [q(MIN_PERL_VERSION)],

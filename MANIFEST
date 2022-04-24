@@ -2,6 +2,8 @@ MANIFEST
 MANIFEST.SKIP
 Makefile.PL
 README
+README.md
 bin/markpod.pl
 cpanfile
 LICENSE                                  
+t/00-load.t
