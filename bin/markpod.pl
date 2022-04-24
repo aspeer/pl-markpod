@@ -67,13 +67,13 @@ use constant {
 #  Version Info, must be all one line for MakeMaker, CPAN.
 #
 $VERSION='0.007';
-#use App::markpod qw(main getopt);
+
 
 #  Run main
 #
-exit ${&main(&getopt(\@ARGV)) || die err ()};
+exit (${&main(&getopt(\@ARGV)) || die err ()} || 0); # || 0 stops warnings
 
-__END__
+
 #===================================================================================================
 
 
