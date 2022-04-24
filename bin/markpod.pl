@@ -66,7 +66,7 @@ use constant {
 
 #  Version Info, must be all one line for MakeMaker, CPAN.
 #
-$VERSION='0.007';
+$VERSION='0.008';
 
 
 #  Run main
