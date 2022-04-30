@@ -4,6 +4,9 @@ Makefile.PL
 README
 README.md
 bin/markpod.pl
+lib/App/Markpod.pm
+lib/App/Markpod/Util.pm
+lib/App/Markpod/Constant.pm
 cpanfile
 LICENSE                                  
 t/00-load.t
