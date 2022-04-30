@@ -70,7 +70,7 @@ sub err {
     #
     my $msg=&fmt('error: %s', @_);
     CORE::print STDERR $msg, "\n";
-    eval { require Carp; 1 };
+    eval {require Carp; 1};
     Carp::croak;
 
 }
@@ -86,7 +86,7 @@ sub fmt {
     $caller=~s/^_?!(_)//;
     my $format='@<<<<<<<<<<<<<<<<<<<<<< @<';
     local $^A='';
-    formline $format, "[${caller}]" , '';
+    formline $format, "[${caller}]", '';
     $message=$^A . $message; $^A=undef;
     return $message;
 

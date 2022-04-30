@@ -24,13 +24,13 @@ use vars qw($VERSION @ISA %EXPORT_TAGS @EXPORT_OK @EXPORT %Constant);
 
 #  Version information
 #
-$VERSION = '0.008';
+$VERSION='0.008';
 
 
 #  Get module file name and path, derive name of file to store local constants
 #
 use Cwd qw(abs_path);
-my $local_fn = abs_path(__FILE__) . '.local';
+my $local_fn=abs_path(__FILE__) . '.local';
 
 
 #  Hash of constants
@@ -44,8 +44,8 @@ my $local_fn = abs_path(__FILE__) . '.local';
 
     #  Local constants override anything above
     #
-    %{ do($local_fn) || {} },
-    %{ do(glob(sprintf('~/.%s.local', __PACKAGE__))) || {} } # || {} avoids warning
+    %{do($local_fn) || {}},
+    %{do(glob(sprintf('~/.%s.local', __PACKAGE__))) || {}}    # || {} avoids warning
 
 );
 
@@ -53,10 +53,10 @@ my $local_fn = abs_path(__FILE__) . '.local';
 #  Export constants to namespace, place in export tags
 #
 require Exporter;
-@ISA = qw(Exporter);
-foreach ( keys %Constant ) { ${$_} = $Constant{$_} }
-@EXPORT      = map { '$' . $_ } keys %Constant;
-@EXPORT_OK   = @EXPORT;
-%EXPORT_TAGS = ( all => [@EXPORT_OK] );
-$_           = \%Constant;
+@ISA=qw(Exporter);
+foreach (keys %Constant) {${$_}=$Constant{$_}}
+@EXPORT=map {'$' . $_} keys %Constant;
+@EXPORT_OK=@EXPORT;
+%EXPORT_TAGS=(all => [@EXPORT_OK]);
+$_=\%Constant;
 

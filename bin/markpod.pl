@@ -14,7 +14,6 @@
 #
 
 
-
 #  Compiler pragma
 #
 use strict;
@@ -58,7 +57,7 @@ use constant {
     #  Option defaults
     #
     OPTION_HR => {
-        %{$OPTION_HR}, # From App::Markpod::Constant;
+        %{$OPTION_HR},                              # From App::Markpod::Constant;
         %{do(glob("~/.${Script}.option")) || {}}    # || {} avoids warning
     },
 
@@ -77,7 +76,7 @@ $VERSION='0.008';
 
 #  Run main
 #
-exit (${&main(&getopt(\@ARGV)) || die err ()} || 0); # || 0 stops warnings
+exit(${&main(&getopt(\@ARGV)) || die err ()} || 0);    # || 0 stops warnings
 
 
 #===================================================================================================
@@ -133,7 +132,9 @@ sub getopt {
     #
     my %opt=(
 
-        map {$_ => do { my $key=sprintf("%s_%s", +OPTION_ENV_PREFIX, uc($_)); defined $ENV{$key} ? $ENV{$key} : +OPTION_HR->{$_} }} keys %{+OPTION_HR} 
+        map {
+            $_ => do {my $key=sprintf("%s_%s", +OPTION_ENV_PREFIX, uc($_)); defined $ENV{$key} ? $ENV{$key} : +OPTION_HR->{$_}}
+        } keys %{+OPTION_HR}
 
     );
     debug('opt stage 1: %s', Dumper(\%opt));

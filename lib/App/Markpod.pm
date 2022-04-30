@@ -46,6 +46,7 @@ $VERSION='0.008';
 #  Done
 #
 1;
+
 #===================================================================================================
 
 
@@ -55,8 +56,8 @@ sub new {
     #
     my ($class, $opt_hr)=@_;
     debug("instantiating new $class object with supplied options %s", Dumper($opt_hr));
-    
-    
+
+
     #  Get default options and overrides
     #
     my %opt=(
@@ -64,12 +65,12 @@ sub new {
         %{$opt_hr}
     );
     debug('final option hash %s', Dumper(\%opt));
-    
-    
+
+
     #  Done
     #
     return bless(\%opt, $class);
-    
+
 }
 
 
@@ -149,7 +150,7 @@ sub markpod_parse {
 
     my ($self, $md)=@_;
     my $md2pod_or=Markdown::Pod->new() ||
-        return err('unable to create new Markdown::Pod object');
+        return err ('unable to create new Markdown::Pod object');
     my $pod=$md2pod_or->markdown_to_pod(dialect => $self->{'dialect'}, markdown => $md);
     debug('created pod %s', Dumper(\$pod));
     $pod=join(
