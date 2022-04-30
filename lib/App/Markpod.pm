@@ -62,7 +62,7 @@ sub new {
     #
     my %opt=(
         %{$OPTION_HR},
-        %{$opt_hr}
+        $opt_hr ? %{$opt_hr} : ()
     );
     debug('final option hash %s', Dumper(\%opt));
 
@@ -100,9 +100,10 @@ sub markpod {
         return err ("nable to create new PPI instance on file $fn");
 
 
-    #  Find Pod section and massage
+    #  Find Pod section and massage. Return early if nothing to do (no POD)
     #
-    my $pod_or_ar=$ppi_doc_or->find('PPI::Token::Pod');
+    my $pod_or_ar=$ppi_doc_or->find('PPI::Token::Pod') ||
+        return \undef;
     debug('pod_or_ar: %s', Dumper($pod_or_ar));
     my $md;
     foreach my $pod_or (@{$pod_or_ar}) {
@@ -325,14 +326,16 @@ Andrew Speer L<mailto:andrew.speer@isolutions.com.au>
 
 =head1 LICENSE and COPYRIGHT
 
-This file is part of markpod.
-
-This software is copyright (c) 2022 by Andrew Speer <andrew.speer@isolutions.com.au>.
+This software is copyright (c) 2022 by Andrew Speer L<mailto:andrew.speer@isolutions.com.au>.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-Full license text is available at:
-L<http://dev.perl.org/licenses/>
+Terms of the Perl programming language system itself
+
+a) the GNU General Public License as published by the Free
+   Software Foundation; either version 1, or (at your option) any
+   later version, or
+b) the "Artistic License"
 
 =cut
