@@ -59,7 +59,7 @@ sub debug {
 
     #  Debug
     #
-    goto &msg if $DEBUG
+    goto &msg if $DEBUG;
 
 }
 
@@ -97,6 +97,6 @@ sub msg {
 
     #  Print message
     #
-    CORE::print &fmt(@_), "\n";
+    return CORE::print &fmt(@_), "\n";
 
 }
