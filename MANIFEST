@@ -10,3 +10,5 @@ lib/App/Markpod/Constant.pm
 cpanfile
 LICENSE                                  
 t/00-load.t
+INSTALL.md
+INSTALL
