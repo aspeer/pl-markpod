@@ -77,8 +77,19 @@ sub new {
 sub markdown_extract {
 
     my ($self, $pod)=@_;
-    my ($md)=($pod=~/^=begin markdown\s*$(.*?)^=end markdown\s*$/ms);
-    chomp ($md ||= '');
+    my $md;
+    if ($pod=~/^=begin markdown\s*$(.*?)^=end markdown\s*$/ms) {
+        $md=$1;
+    }
+    elsif ($pod=~/^=begin markdown\s*$(.*)$/ms) {
+        #  Left off the '=end markdown' so take as all markdown till EOF -
+        #  but cleanup
+        $md=$1;
+    }
+    else {
+        $md='';
+    }
+    chomp ($md);
     debug('extracted markdown %s', Dumper(\$md));
     return $md;
 
