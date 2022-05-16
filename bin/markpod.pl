@@ -197,7 +197,7 @@ pod documentation (e.g. perldoc etc.)
 
 # USAGE
 
-Create a pod section in the perl code using the markdown formatter begin
+Create a pod section in the perl code using the markdown formatter "begin"
 convention, e.g.
 
 ```

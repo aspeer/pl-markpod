@@ -78,7 +78,7 @@ sub markdown_extract {
 
     my ($self, $pod)=@_;
     my ($md)=($pod=~/^=begin markdown\s*$(.*?)^=end markdown\s*$/ms);
-    chomp $md;
+    chomp ($md ||= '');
     debug('extracted markdown %s', Dumper(\$md));
     return $md;
 
@@ -91,7 +91,7 @@ sub markpod {
     #  Find and replace POD in a file
     #
     my ($self, $fn)=@_;
-    debug("processing file $fn");
+    debug("processing file: $fn");
 
 
     #  Create new PPI documents from supplied file
@@ -102,8 +102,10 @@ sub markpod {
 
     #  Find Pod section and massage. Return early if nothing to do (no POD)
     #
-    my $pod_or_ar=$ppi_doc_or->find('PPI::Token::Pod') ||
+    my $pod_or_ar=$ppi_doc_or->find('PPI::Token::Pod') || do {
+        msg("no POD section found in file: $fn, skipping");
         return \undef;
+    };
     debug('pod_or_ar: %s', Dumper($pod_or_ar));
     my $md;
     foreach my $pod_or (@{$pod_or_ar}) {
