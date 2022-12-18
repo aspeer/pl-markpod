@@ -24,7 +24,7 @@ use vars qw($VERSION @ISA %EXPORT_TAGS @EXPORT_OK @EXPORT %Constant);
 
 #  Version information
 #
-$VERSION='0.012';
+$VERSION='0.013';
 
 
 #  Get module file name and path, derive name of file to store local constants

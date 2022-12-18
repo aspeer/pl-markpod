@@ -40,7 +40,7 @@ use Markdown::Pod;
 
 #  Version Info, must be all one line for MakeMaker, CPAN.
 #
-$VERSION='0.012';
+$VERSION='0.013';
 
 
 #  Done
