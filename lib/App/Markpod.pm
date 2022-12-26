@@ -78,10 +78,10 @@ sub markdown_extract {
 
     my ($self, $pod)=@_;
     my $md;
-    if ($pod=~/^=begin markdown(?=\s*)(.*?)\n(.*?)\n*^=end markdown\s*$/gims  || $pod=~/^=begin markdown(?=\s*)(.*?)\n(.*)\n*$/gims) {
+    if ($pod=~/^=begin markdown(?=\s*)(.*?)\n(.*?)\n*^=end markdown\s*$/gims || $pod=~/^=begin markdown(?=\s*)(.*?)\n(.*)\n*$/gims) {
         if (my $fn=$1) {
             $fn=~s/^\s*//;
-            debug ("suggested output filename: $fn");
+            debug("suggested output filename: $fn");
             $self->{'outfile'} ||= $fn;
         }
         $md=$2;
@@ -89,7 +89,7 @@ sub markdown_extract {
     else {
         $md='';
     }
-    chomp ($md);
+    chomp($md);
     debug('extracted markdown %s', Dumper(\$md));
     return $md;
 
@@ -123,7 +123,7 @@ sub markpod {
         $md.=(my $pod_md=$self->markdown_extract($pod_or->content));
         my $pod=$self->markpod_parse($pod_md);
         $pod.="\n=cut\n";
-        if ($inplace_changed+=($pod ne $pod_or->content())) {
+        if ($inplace_changed += ($pod ne $pod_or->content())) {
             debug("pod: updating");
             $pod_or->set_content($pod);
         }
@@ -149,7 +149,7 @@ sub markpod {
     }
     elsif ($self->{'inplace'}) {
         if ($inplace_changed) {
-        
+
             #  Make a backup copy
             #
             debug("inplace_changed: $inplace_changed, updating file ${fn}");
