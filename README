@@ -38,8 +38,8 @@ POD. Print to STDOUT or file (using --output)
 
 USAGE
 
-Create a pod section in the perl code using the markdown formatter begin
-convention, e.g.
+Create a pod section in the perl code using the markdown formatter
+"begin" convention, e.g.
 
      =pod
      =begin markdown 

@@ -35,7 +35,7 @@ pod documentation (e.g. perldoc etc.)
 
 # USAGE
 
-Create a pod section in the perl code using the markdown formatter begin
+Create a pod section in the perl code using the markdown formatter "begin"
 convention, e.g.
 
 ```
@@ -77,4 +77,3 @@ the same terms as the Perl 5 programming language system itself.
 Full license text is available at:
 
 <http://dev.perl.org/licenses/>
-
