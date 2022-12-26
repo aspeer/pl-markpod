@@ -78,13 +78,13 @@ sub markdown_extract {
 
     my ($self, $pod)=@_;
     my $md;
-    if ($pod=~/^=begin markdown\s*$(.*?)^=end markdown\s*$/ms) {
-        $md=$1;
-    }
-    elsif ($pod=~/^=begin markdown\s*$(.*)$/ms) {
-        #  Left off the '=end markdown' so take as all markdown till EOF -
-        #  but cleanup
-        $md=$1;
+    if ($pod=~/^=begin markdown(?=\s*)(.*?)\n(.*?)\n*^=end markdown\s*$/gims  || $pod=~/^=begin markdown(?=\s*)(.*?)\n(.*)\n*$/gims) {
+        if (my $fn=$1) {
+            $fn=~s/^\s*//;
+            debug ("suggested output filename: $fn");
+            $self->{'outfile'} ||= $fn;
+        }
+        $md=$2;
     }
     else {
         $md='';
@@ -118,12 +118,18 @@ sub markpod {
         return \undef;
     };
     debug('pod_or_ar: %s', Dumper($pod_or_ar));
-    my $md;
+    my ($md, $inplace_changed);
     foreach my $pod_or (@{$pod_or_ar}) {
         $md.=(my $pod_md=$self->markdown_extract($pod_or->content));
         my $pod=$self->markpod_parse($pod_md);
         $pod.="\n=cut\n";
-        $pod_or->set_content($pod);
+        if ($inplace_changed+=($pod ne $pod_or->content())) {
+            debug("pod: updating");
+            $pod_or->set_content($pod);
+        }
+        else {
+            debug("pod: no change, not updating");
+        }
     }
 
     #  Check if we just want Markdonw
@@ -138,14 +144,24 @@ sub markpod {
     #  Want POD - proceed
     #
     if (my $out_fn=$self->{'outfile'}) {
+        debug("saving to file: $out_fn");
         $ppi_doc_or->save($out_fn);
     }
     elsif ($self->{'inplace'}) {
-        File::Copy::copy($fn, "${fn}.bak") unless $self->{'nobackup'};
+        if ($inplace_changed) {
+        
+            #  Make a backup copy
+            #
+            debug("inplace_changed: $inplace_changed, updating file ${fn}");
+            File::Copy::copy($fn, "${fn}.bak") unless $self->{'nobackup'};
 
-        #  Backup and save
-        #
-        $ppi_doc_or->save($fn);
+            #  Save
+            #
+            $ppi_doc_or->save($fn);
+        }
+        else {
+            debug("inplace_changed: $inplace_changed, not updating ${fn}");
+        }
     }
     else {
         print $ppi_doc_or->serialize;
@@ -154,7 +170,7 @@ sub markpod {
 
     #  Done
     #
-    return \undef;
+    return \$inplace_changed;
 
 
 }
@@ -171,7 +187,9 @@ sub markpod_parse {
         "\n",
         '=begin markdown',
         $md,
+        '',
         '=end markdown',
+        '',
         $pod
     );
     return $pod;
@@ -265,6 +283,7 @@ Full license text is available at:
 
 =end markdown
 
+
 =head1 NAME
 
 markpod.pl - convert markdown formatted pod to pure pod
@@ -339,12 +358,14 @@ Andrew Speer L<mailto:andrew.speer@isolutions.com.au>
 
 This file is part of markpod.
 
-This software is copyright (c) 2022 by Andrew Speer <andrew.speer@isolutions.com.au>.
+This software is copyright (c) 2022 by Andrew Speer L<mailto:andrew.speer@isolutions.com.au>.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 Full license text is available at:
+
 L<http://dev.perl.org/licenses/>
+
 
 =cut
