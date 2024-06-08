@@ -69,7 +69,7 @@ Andrew Speer <andrew.speer@isolutions.com.au>
 
 This file is part of markpod.
 
-This software is copyright (c) 2022 by Andrew Speer <andrew.speer@isolutions.com.au>.
+This software is copyright (c) 2024 by Andrew Speer <andrew.speer@isolutions.com.au>.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
