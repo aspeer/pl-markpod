@@ -39,7 +39,6 @@ my $local_fn=abs_path(__FILE__) . '.local';
 
     OPTION_HR => {
         dialect => 'GitHub',
-        inplace => 1,
     },
 
     #  Local constants override anything above

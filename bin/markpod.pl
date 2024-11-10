@@ -30,6 +30,8 @@ use App::Markpod::Constant;
 
 #  Other external modules
 #
+use IO::File;
+use Fcntl;
 use Pod::Usage;
 use FindBin qw($RealBin $Script);
 use Getopt::Long qw(GetOptionsFromArray :config auto_version auto_help);
@@ -49,7 +51,8 @@ use constant {
         'inplace|i',
         'infile_ar|file|fn|f|in=s@',
         'outfile|output|o=s',
-        'extract|noconvert|md|markdown',
+        'extract_markdown|extract_md|extract|noconvert|md|markdown',
+        'extract_pod|pod',
         'nobackup'
     ],
 
@@ -105,10 +108,48 @@ sub main {    #no subsort
 
         #  Do it
         #
-        $self->markpod($fn) ||
-            return err ("unknown error processing file $fn");
+        if ($self->{'extract_markdown'} || $self->{'extract_pod'}) {
+        
+            
+            #  We just want the mark down or POD, will get correct one
+            #
+            my $output=${ $self->markpod($fn) ||
+                return err() };
+                
+                
+            #  Send to STDOUT or selected output file
+            #
+            &outfile($self, $output);
+            
+        }
+        elsif ($self->{'inplace'}) {
+        
+        
+            #  Want to update inplace. Only do if changed
+            #
+            my $ppi_doc_or=$self->markpod($fn) ||
+                return err();
+            if ($self->{'pod_changed'}) {
+                $self->markpod_inplace_update($ppi_doc_or, $fn) ||
+                    return err();
+            }
+            
+        }
+        else {
+        
 
-
+            #  Guess the want the whole resulting file output somewhere
+            #
+            my $ppi_doc_or=$self->markpod($fn) ||
+                return err();
+            my $output=$ppi_doc_or->serialize();
+            
+            
+            #  Send to STDOUT or selected output file
+            #
+            &outfile($self, $output);
+            
+        }
     }
 
 
@@ -118,6 +159,27 @@ sub main {    #no subsort
 
 
 }
+
+
+sub outfile {
+
+
+    #  Save output to a file or send to STDOUT
+    #
+    my ($self, $output)=@_;
+
+
+    #  Send to STDOUT or selected output file
+    #
+    my $fn=$self->{'outfile'};
+    my $fh=$fn ? do {
+        IO::File->new($fn, O_CREAT|O_TRUNC|O_WRONLY) ||
+            return die $!;
+        } : *STDOUT;
+    print $fh $output;
+    
+
+}    
 
 
 sub getopt {
@@ -240,7 +302,6 @@ Full license text is available at:
 
 <http://dev.perl.org/licenses/>
 
-
 =end markdown
 
 
@@ -318,7 +379,7 @@ Andrew Speer L<mailto:andrew.speer@isolutions.com.au>
 
 This file is part of markpod.
 
-This software is copyright (c) 2022 by Andrew Speer L<mailto:andrew.speer@isolutions.com.au>.
+This software is copyright (c) 2024 by Andrew Speer L<mailto:andrew.speer@isolutions.com.au>.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

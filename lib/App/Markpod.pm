@@ -118,6 +118,132 @@ sub markpod {
         return \undef;
     };
     debug('pod_or_ar: %s', Dumper($pod_or_ar));
+    my ($md, $inplace_changed, @pod);
+    foreach my $pod_or (@{$pod_or_ar}) {
+        $md.=(my $pod_md=$self->markdown_extract($pod_or->content));
+        my $pod=$self->markpod_parse($pod_md);
+        $pod.="\n=cut\n";
+        if ($inplace_changed += ($pod ne $pod_or->content())) {
+            debug("pod: updating");
+            $pod_or->set_content($pod);
+        }
+        else {
+            debug("pod: no change, not updating");
+        }
+        push @pod, $pod;
+    }
+
+
+    #  Check if we just want Markdown ?
+    #
+    if ($self->{'extract_markdown'}) {
+        #my $fh=IO::File->new($self->{'outfile'}, O_WRONLY | O_TRUNC | O_CREAT) || *STDOUT;
+        #print $fh $md;
+        #return \undef;
+        return \$md;
+    }
+    
+    
+    #  Or just want POD ?
+    #
+    if ($self->{'extract_pod'}) {
+        #my $pod=$ppi_doc_or->serialize;
+        my $pod=join($/, @pod);
+        return \$pod;
+    }
+    
+    
+    #  Return PPO object
+    #
+    return $ppi_doc_or;
+    
+
+
+    #  Want POD - proceed
+    #
+    if (my $out_fn=$self->{'outfile'}) {
+        debug("saving to file: $out_fn");
+        $ppi_doc_or->save($out_fn);
+    }
+    elsif ($self->{'inplace'}) {
+        if ($inplace_changed) {
+
+            #  Make a backup copy
+            #
+            debug("inplace_changed: $inplace_changed, updating file ${fn}");
+            File::Copy::copy($fn, "${fn}.bak") unless $self->{'nobackup'};
+
+            #  Save
+            #
+            $ppi_doc_or->save($fn);
+        }
+        else {
+            debug("inplace_changed: $inplace_changed, not updating ${fn}");
+        }
+    }
+    else {
+        print $ppi_doc_or->serialize;
+    }
+
+
+    #  Done
+    #
+    return \$inplace_changed;
+
+
+}
+
+
+sub markpod_inplace_update {
+
+
+    #  Update file in place
+    #
+    my ($self, $ppi_doc_or, $fn)=@_;
+
+
+    #  Make a backup copy if needed
+    #
+    debug("updating file ${fn}");
+    File::Copy::copy($fn, "${fn}.bak") unless $self->{'nobackup'};
+
+
+    #  Save
+    #
+    $ppi_doc_or->save($fn) ||
+        return err("unable to save to file: $fn, $!");
+        
+
+}
+    
+    
+    
+    
+    
+
+
+sub markpod0 {
+
+
+    #  Find and replace POD in a file
+    #
+    my ($self, $fn)=@_;
+    debug("processing file: $fn");
+
+
+    #  Create new PPI documents from supplied file
+    #
+    my $ppi_doc_or=PPI::Document->new($fn) ||
+        return err ("nable to create new PPI instance on file $fn");
+
+
+    #  Find Pod section and massage. Return early if nothing to do (no POD)
+    #
+    my $pod_or_ar=$ppi_doc_or->find('PPI::Token::Pod') || do {
+        msg("no POD section found in file: $fn, skipping");
+        return \undef;
+    };
+    debug('pod_or_ar: %s', Dumper($pod_or_ar));
     my ($md, $inplace_changed);
     foreach my $pod_or (@{$pod_or_ar}) {
         $md.=(my $pod_md=$self->markdown_extract($pod_or->content));
@@ -131,6 +257,7 @@ sub markpod {
             debug("pod: no change, not updating");
         }
     }
+
 
     #  Check if we just want Markdonw
     #
