@@ -7,6 +7,16 @@ markpod - convert markdown formatted pod to pure pod
 
 `markpod.pl filename <filename> <filename>`
 
+# EXAMPLES
+
+\#  Convert markdown in file to POD. Backup will be taken
+`markpod.pl bin/foo.pl --inplace`
+
+
+\#  Extract markdown from file and output to standalone file
+`markpod.pl bin/foo.pl --extract --outfile=bin/foo.pl.md`
+
+
 # DESCRIPTION
 
 markpod.pl scans a file for markdown formatted pod and - if found - converts it to pure
@@ -19,11 +29,15 @@ pod documentation (e.g. perldoc etc.)
 
 **--file|fn|f** input file to process
 
+**--inplace** update the file in place
+
 **--outfile** file to write to. If omitted will overwrite input file (i.e. inplace update)
 
 **--dialect** which Markdown dialect to use from Markdent module. Options are Standard, GitHub (default) and Theory 
 
 **--extract** just extract the Markdown from the input file and don't update POD. Print to STDOUT or file (using --output)
+
+**--extract_pod** just extract the POD from the input file. Print to STDOUT or file (using --output)
 
 **--nobackup** don't backup input file when doing inplace update
 

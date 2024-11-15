@@ -126,6 +126,7 @@ sub markpod {
         if ($inplace_changed += ($pod ne $pod_or->content())) {
             debug("pod: updating");
             $pod_or->set_content($pod);
+            $self->{'pod_changed'}=$inplace_changed;
         }
         else {
             debug("pod: no change, not updating");
@@ -193,13 +194,73 @@ sub markpod {
 
 }
 
+sub markpod_process {
+
+
+    #  Find and replace POD in a file
+    #
+    my ($self, $fn)=@_;
+    debug("processing file: $fn");
+
+
+    #  Create new PPI documents from supplied file
+    #
+    my $ppi_doc_or=PPI::Document->new($fn) ||
+        return err ("nable to create new PPI instance on file $fn");
+
+
+    #  Find Pod section and massage. Return early if nothing to do (no POD)
+    #
+    my $pod_or_ar=$ppi_doc_or->find('PPI::Token::Pod') || do {
+        msg("no POD section found in file: $fn, skipping");
+        return \undef;
+    };
+    debug('pod_or_ar: %s', Dumper($pod_or_ar));
+    my ($md, $inplace_changed, @pod);
+    foreach my $pod_or (@{$pod_or_ar}) {
+        $md.=(my $pod_md=$self->markdown_extract($pod_or->content));
+        my $pod=$self->markpod_parse($pod_md);
+        $pod.="\n=cut\n";
+        if ($inplace_changed += ($pod ne $pod_or->content())) {
+            debug("pod: updating");
+            $pod_or->set_content($pod);
+            $self->{'pod_changed'}=$inplace_changed;
+        }
+        else {
+            debug("pod: no change, not updating");
+        }
+        push @pod, $pod;
+    }
+    
+
+    #  Collate processed POD
+    #
+    my $pod=join($/, @pod);
+    
+
+    #  Return items of interest
+    #
+    my %return=(
+
+      ppi_doc_or	=> $ppi_doc_or,
+      md_sr		=> \$md,
+      pod_sr		=> \$pod,
+      inplace_changed	=> $inplace_changed
+      
+    );
+    return \%return;
+
+}
+
 
 sub markpod_inplace_update {
 
 
     #  Update file in place
     #
-    my ($self, $ppi_doc_or, $fn)=@_;
+    my ($self, $fn, $ppi_doc_or, )=@_;
+    $ppi_doc_or ||= $self->markpod($fn) ||
+      return err();
 
 
     #  Make a backup copy if needed

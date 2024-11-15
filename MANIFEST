@@ -4,6 +4,7 @@ Makefile.PL
 README
 README.md
 bin/markpod.pl
+bin/markpod.md
 lib/App/Markpod.pm
 lib/App/Markpod/Util.pm
 lib/App/Markpod/Constant.pm
