@@ -125,13 +125,13 @@ sub main {    #no subsort
         
             #  Just want markdown
             #
-            my $markdown=${ $self->markdown() ||
-                return err() };
-        
+            my $markdown_sr=$self->markdown() ||
+                return err() ;
                 
+
             #  Send to STDOUT or selected output file
             #
-            &outfile($markdown, $output_fn);
+            &outfile($markdown_sr, $output_fn);
             
         }
         elsif ($opt_hr->{'extract_pod'}) {
@@ -139,13 +139,13 @@ sub main {    #no subsort
 
             #  Just want POD
             #
-            my $pod=${ $self->pod() ||
-                return err() };
+            my $pod_sr=$self->pod() ||
+                return err();
         
                 
             #  Send to STDOUT or selected output file
             #
-            &outfile($pod, $output_fn);
+            &outfile($pod_sr, $output_fn);
             
         }
         elsif ($opt_hr->{'inplace'}) {
@@ -172,7 +172,7 @@ sub main {    #no subsort
             
             #  Send to STDOUT or selected output file
             #
-            &outfile($output, $output_fn);
+            &outfile(\$output, $output_fn);
             
         }
     }
@@ -191,7 +191,7 @@ sub outfile {
 
     #  Save output to a file or send to STDOUT
     #
-    my ($output, $fn)=@_;
+    my ($output_sr, $fn)=@_;
 
 
     #  Send to STDOUT or selected output file
@@ -200,7 +200,7 @@ sub outfile {
         IO::File->new($fn, O_CREAT|O_TRUNC|O_WRONLY) ||
             return err("unable to open output file $fn, $!");
         } : *STDOUT;
-    print $fh $output;
+    print $fh ${$output_sr};
     
 
 }    
