@@ -17,7 +17,7 @@ package App::Markpod::Util;
 #  Pragma
 #
 use strict;
-use vars qw($VERSION $DEBUG @EXPORT);
+use vars qw($VERSION $DEBUG $QUIET @EXPORT);
 use warnings;
 
 
@@ -33,7 +33,7 @@ $Data::Dumper::Terse=1;
 #  Export functions
 #
 use base 'Exporter';
-@EXPORT=qw(err msg arg debug Dumper);
+@EXPORT=qw(err msg arg debug debug_enable Dumper);
 
 
 #  Version information in a format suitable for CPAN etc. Must be
@@ -55,11 +55,39 @@ $Script=~s/\.pl$//;
 #==================================================================================================
 
 
+sub quiet_enable {
+
+
+    #  Turn on quiet flag
+    #
+    $QUIET++;
+    
+
+}
+
+
+sub debug_enable {
+
+    #  Turn on debugging flag
+    #
+    $DEBUG=shift();
+    
+}
+
+
 sub debug {
 
     #  Debug
     #
-    goto &msg if $DEBUG;
+    $DEBUG || return;
+    my $debug=sprintf(shift(), @_);
+    chomp($debug);
+    my ($package, undef, $line, $method) = caller(1);  # '1' for caller of the function
+    print STDERR sprintf("[%s:%d] %s$/", 
+        join('::', grep {$_} ($package, $method)),
+        $line,
+        $debug
+    );
 
 }
 
@@ -97,6 +125,6 @@ sub msg {
 
     #  Print message
     #
-    return CORE::print &fmt(@_), "\n";
+    return (CORE::print &fmt(@_), $/) unless $QUIET;
 
 }

@@ -46,7 +46,7 @@ use constant {
     #
     OPTION_AR => [
 
-        qw(man verbose quiet),
+        qw(man verbose quiet debug),
         'dialect=s',
         'inplace|i',
         'infile_ar|file|fn|f|in=s@',
@@ -230,8 +230,10 @@ sub getopt {
     #
     GetOptionsFromArray($opt_ar, \%opt, @{+OPTION_AR}, '' => \${opt {'stdin'}}, '<>' => sub {push @{$opt{'infile_ar'}}, shift() . ''}) ||
         pod2usage(2);
+    debug_enable($opt{'debug'});
     debug('opt stage 2: %s', Dumper(\%opt));
     pod2usage(-verbose => 2) if $opt{'man'};
+    
 
 
     #  Done
