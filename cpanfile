@@ -10,6 +10,7 @@ requires 'constant';
 requires 'strict';
 requires 'vars';
 requires 'warnings';
+requires 'with';
 
 on configure => sub {
     requires 'perl', '5.006';

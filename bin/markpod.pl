@@ -90,12 +90,17 @@ sub main {    #no subsort
 
     #  Get base object blassed with options as first arg.
     #
-    my $self=App::Markpod->new(shift());
+    my $self=App::Markpod->new((my $opt_hr=shift()));
+    
+    
+    #  Output file name. Might be empty
+    #
+    my $output_fn=$opt_hr->{'outfile'};
 
 
     #  Iterate over infiles
     #
-    foreach my $fn (@{$self->{'infile_ar'}}) {
+    foreach my $fn (@{$opt_hr->{'infile_ar'}}) {
 
 
         #  Sanity check on file name
@@ -104,50 +109,70 @@ sub main {    #no subsort
         unless (-f $fn) {
             return err ("file $fn not found");
         }
-
-
-        #  Do it
-        #
-        if ($self->{'extract_markdown'} || $self->{'extract_pod'}) {
         
-            
-            #  We just want the mark down or POD, will get correct one
+        
+        #  Process
+        #
+        my $pod_changed=${$self->markpod_process($fn) ||
+            return err()};
+        debug("markpod_process completed with $pod_changed lines updated");
+
+
+        #  Do whatever opts tell us
+        #
+        if ($opt_hr->{'extract_markdown'}) {
+        
+        
+            #  Just want markdown
             #
-            my $output=${ $self->markpod($fn) ||
+            my $markdown=${ $self->markdown() ||
                 return err() };
-                
+        
                 
             #  Send to STDOUT or selected output file
             #
-            &outfile($self, $output);
+            &outfile($markdown, $output_fn);
             
         }
-        elsif ($self->{'inplace'}) {
+        elsif ($opt_hr->{'extract_pod'}) {
+
+
+            #  Just want POD
+            #
+            my $pod=${ $self->pod() ||
+                return err() };
+        
+                
+            #  Send to STDOUT or selected output file
+            #
+            &outfile($pod, $output_fn);
+            
+        }
+        elsif ($opt_hr->{'inplace'}) {
         
         
             #  Want to update inplace. Only do if changed
             #
-            my $ppi_doc_or=$self->markpod($fn) ||
-                return err();
-            if (${$self->{'pod_changed'}}) {
+            if ($pod_changed) {
+                my $ppi_doc_or=$self->ppi_doc_or($fn) ||
+                    return err();
                 $self->markpod_inplace_update($fn, $ppi_doc_or) ||
                     return err();
             }
             
         }
         else {
-        
 
-            #  Guess the want the whole resulting file output somewhere
+            #  Guess we want the whole resulting file output somewhere
             #
-            my $ppi_doc_or=$self->markpod($fn) ||
+            my $ppi_doc_or=$self->ppi_doc_or($fn) ||
                 return err();
             my $output=$ppi_doc_or->serialize();
             
             
             #  Send to STDOUT or selected output file
             #
-            &outfile($self, $output);
+            &outfile($output, $output_fn);
             
         }
     }
@@ -166,15 +191,14 @@ sub outfile {
 
     #  Save output to a file or send to STDOUT
     #
-    my ($self, $output)=@_;
+    my ($output, $fn)=@_;
 
 
     #  Send to STDOUT or selected output file
     #
-    my $fn=$self->{'outfile'};
     my $fh=$fn ? do {
         IO::File->new($fn, O_CREAT|O_TRUNC|O_WRONLY) ||
-            return die $!;
+            return err("unable to open output file $fn, $!");
         } : *STDOUT;
     print $fh $output;
     

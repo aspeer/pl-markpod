@@ -69,7 +69,7 @@ sub new {
 
     #  Done
     #
-    return bless(\%opt, $class);
+    return bless({opt=>\%opt}, $class);
 
 }
 
@@ -96,7 +96,7 @@ sub markdown_extract {
 }
 
 
-sub markpod {
+sub markpod_process {
 
 
     #  Find and replace POD in a file
@@ -118,21 +118,67 @@ sub markpod {
         return \undef;
     };
     debug('pod_or_ar: %s', Dumper($pod_or_ar));
-    my ($md, $inplace_changed, @pod);
+    my ($md, $pod_changed, @pod);
     foreach my $pod_or (@{$pod_or_ar}) {
         $md.=(my $pod_md=$self->markdown_extract($pod_or->content));
         my $pod=$self->markpod_parse($pod_md);
         $pod.="\n=cut\n";
-        if ($inplace_changed += ($pod ne $pod_or->content())) {
+        if ($pod_changed += ($pod ne $pod_or->content())) {
             debug("pod: updating");
             $pod_or->set_content($pod);
-            $self->{'pod_changed'}=$inplace_changed;
         }
         else {
             debug("pod: no change, not updating");
         }
         push @pod, $pod;
     }
+    
+    
+    #  Join POD
+    #
+    my $pod=join($/, @pod);
+    
+    
+    #  Store results
+    #
+    @{$self}{qw(
+
+        pod_changed
+        markdown
+        pod
+        ppi_doc_or
+        
+    )}=(
+        
+        $pod_changed,
+        $md,
+        $pod,
+        $ppi_doc_or
+    );
+    
+    
+    #  Return scalar ref of pod lines that would have changed
+    #
+    return \$pod_changed;
+    
+}
+
+
+#  Getters
+#
+foreach my $sub (qw(markdown pod ppi_doc_or)) {
+
+    *{sprintf("%s::${sub}", __PACKAGE__)}=sub { ref($_[0]->{$_}) ? $_[0]->{$_} : \($_[0]->{$_}) }
+    
+}
+
+
+1;
+__END__
+
+sub ppi_doc_or {
+
+        
 
 
     #  Check if we just want Markdown ?

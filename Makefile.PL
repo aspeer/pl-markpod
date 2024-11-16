@@ -63,3 +63,19 @@ sub post_initialize {
     $mm_or->{'PM'}{'LICENSE'}='$(INST_LIBDIR)/$(BASEEXT)/LICENSE' if -e 'LICENSE';
     $mm_or->SUPER::post_initialize;
 };
+#sub postamble {
+#    #  Any binaries copy to dest without .pl extension also
+#    #
+#    my $mm_or=shift();
+#    my $postamble=$mm_or->SUPER::postamble;
+#    $postamble.=<<'POSTAMBLE';
+#bincopy :
+#	perl -MFile::Copy=copy -e 'map {($$fn_new=$$fn_old=$$_)=~s/\.pl$$//; ! -f $$fn_new && do {eval{symlink($$fn_old, $$fn_new)} || copy($$fn_old, $$fn_new)}} @ARGV' $(EXE_FILES)
+#POSTAMBLE
+#
+#}
+sub fixin {
+    my $mm_or=shift();
+    print "FIXIN $mm_or, @_\n";
+}
+	        
