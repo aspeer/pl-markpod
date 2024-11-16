@@ -255,21 +255,23 @@ markpod - convert markdown formatted pod to pure pod
 
 # SYNOPSIS
 
-`markpod.pl filename <filename> <filename>`
+`markpod filename <filename> <filename>`
 
 # EXAMPLES
 
 \#  Convert markdown in file to POD. Backup will be taken
-`markpod.pl bin/foo.pl --inplace`
+
+`markpod bin/foo.pl --inplace`
 
 
 \#  Extract markdown from file and output to standalone file
-`markpod.pl bin/foo.pl --extract --outfile=bin/foo.pl.md`
+
+`markpod bin/foo.pl --extract --outfile=bin/foo.pl.md`
 
 
 # DESCRIPTION
 
-markpod.pl scans a file for markdown formatted pod and - if found - converts it to pure
+markpod scans a file for markdown formatted pod and - if found - converts it to pure
 pod, and then appends it to the pod section of the file. It allows the user to write perl
 documentation in markdown format within a pod block - and then have it
 converted to "normal" pod for use with all standard utilities that expect
@@ -352,12 +354,23 @@ markpod - convert markdown formatted pod to pure pod
 
 =head1 SYNOPSIS
 
-C<<< markpod.pl filename <filename> <filename> >>>
+C<<< markpod filename <filename> <filename> >>>
+
+
+=head1 EXAMPLES
+
+#  Convert markdown in file to POD. Backup will be taken
+
+C<markpod bin/foo.pl --inplace>
+
+#  Extract markdown from file and output to standalone file
+
+C<markpod bin/foo.pl --extract --outfile=bin/foo.pl.md>
 
 
 =head1 DESCRIPTION
 
-markpod.pl scans a file for markdown formatted pod and - if found - converts it to pure
+markpod scans a file for markdown formatted pod and - if found - converts it to pure
 pod, and then appends it to the pod section of the file. It allows the user to write perl
 documentation in markdown format within a pod block - and then have it
 converted to "normal" pod for use with all standard utilities that expect
@@ -368,11 +381,15 @@ pod documentation (e.g. perldoc etc.)
 
 B<--file|fn|f> input file to process
 
+B<--inplace> update the file in place
+
 B<--outfile> file to write to. If omitted will overwrite input file (i.e. inplace update)
 
 B<--dialect> which Markdown dialect to use from Markdent module. Options are Standard, GitHub (default) and Theory 
 
 B<--extract> just extract the Markdown from the input file and don't update POD. Print to STDOUT or file (using --output)
+
+B<--extract_pod> just extract the POD from the input file. Print to STDOUT or file (using --output)
 
 B<--nobackup> don't backup input file when doing inplace update
 

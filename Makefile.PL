@@ -56,6 +56,8 @@ while (my($mm_ver_test, $ar)=each %MM_Compat) {
 }
 WriteMakefile(%WriteMakefile);
 package MY;
+use File::Copy qw(copy);
+use Cwd qw(abs_path);
 sub post_initialize {
     #  Add license file, other support files here
     #
@@ -63,19 +65,18 @@ sub post_initialize {
     $mm_or->{'PM'}{'LICENSE'}='$(INST_LIBDIR)/$(BASEEXT)/LICENSE' if -e 'LICENSE';
     $mm_or->SUPER::post_initialize;
 };
-#sub postamble {
-#    #  Any binaries copy to dest without .pl extension also
-#    #
-#    my $mm_or=shift();
-#    my $postamble=$mm_or->SUPER::postamble;
-#    $postamble.=<<'POSTAMBLE';
-#bincopy :
-#	perl -MFile::Copy=copy -e 'map {($$fn_new=$$fn_old=$$_)=~s/\.pl$$//; ! -f $$fn_new && do {eval{symlink($$fn_old, $$fn_new)} || copy($$fn_old, $$fn_new)}} @ARGV' $(EXE_FILES)
-#POSTAMBLE
-#
-#}
-sub fixin {
+sub MM::init_main {
+
     my $mm_or=shift();
-    print "FIXIN $mm_or, @_\n";
+    my @fn;
+    foreach my $fn (@{$mm_or->{'EXE_FILES'}}) {
+        (my $fn_new=$fn)=~s/\.pl$//;
+        if ($fn_new ne $fn) {
+            -f $fn_new || do { eval{symlink(abs_path($fn), $fn_new)} || copy(abs_path($fn), $fn_new) }
+        }
+        push @fn, $fn_new;
+    }
+    $mm_or->{'EXE_FILES'}=\@fn;
+    $mm_or->SUPER::init_main();
+
 }
-	        
