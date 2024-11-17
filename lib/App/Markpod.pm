@@ -152,9 +152,14 @@ sub markpod_inplace_update {
 
     #  Update file in place
     #
-    my ($self, $fn, $ppi_doc_or, )=@_;
-    $ppi_doc_or ||= $self->markpod($fn) ||
-      return err();
+    #my ($self, $fn, $ppi_doc_or, )=@_;
+    #$ppi_doc_or ||= $self->markpod($fn) ||
+    #  return err();
+    my ($self, $fn)=@_;
+    use Carp qw(croak confess);
+    confess Dumper(\@_);
+    my $ppi_doc_or=$self->ppi_doc_or()
+        || return err();
 
 
     #  Make a backup copy if needed
@@ -216,6 +221,26 @@ sub markpod_pod_merge {
     return \$pod;
 
 }
+
+
+sub outfile {
+
+
+    #  Save output to a file or send to STDOUT
+    #
+    my ($self, $output_sr, $fn)=@_;
+
+
+    #  Send to STDOUT or selected output file
+    #
+    my $fh=$fn ? do {
+        IO::File->new($fn, O_CREAT|O_TRUNC|O_WRONLY) ||
+            return err("unable to open output file $fn, $!");
+        } : *STDOUT;
+    print $fh ${$output_sr};
+    
+
+}    
 
 
 #  Getters

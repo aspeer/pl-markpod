@@ -154,9 +154,9 @@ sub main {    #no subsort
             #  Want to update inplace. Only do if changed
             #
             if ($pod_changed) {
-                my $ppi_doc_or=$self->ppi_doc_or($fn) ||
-                    return err();
-                $self->markpod_inplace_update($fn, $ppi_doc_or) ||
+                #my $ppi_doc_or=$self->ppi_doc_or($fn) ||
+                #    return err();
+                $self->markpod_inplace_update($fn) ||
                     return err();
             }
             
@@ -259,14 +259,13 @@ markpod - convert markdown formatted pod to pure pod
 
 # EXAMPLES
 
-\#  Convert markdown in file to POD. Backup will be taken
+```
+#  Convert markdown in file to POD. Backup will be taken
+markpod bin/foo.pl --inplace
 
-`markpod bin/foo.pl --inplace`
-
-
-\#  Extract markdown from file and output to standalone file
-
-`markpod bin/foo.pl --extract --outfile=bin/foo.pl.md`
+#  Extract markdown from file and output to standalone file
+markpod bin/foo.pl --extract --outfile=bin/foo.pl.md
+```
 
 
 # DESCRIPTION

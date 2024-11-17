@@ -5,21 +5,22 @@ markpod - convert markdown formatted pod to pure pod
 
 # SYNOPSIS
 
-`markpod.pl filename <filename> <filename>`
+`markpod filename <filename> <filename>`
 
 # EXAMPLES
 
-\#  Convert markdown in file to POD. Backup will be taken
-`markpod.pl bin/foo.pl --inplace`
+```
+#  Convert markdown in file to POD. Backup will be taken
+markpod bin/foo.pl --inplace
 
-
-\#  Extract markdown from file and output to standalone file
-`markpod.pl bin/foo.pl --extract --outfile=bin/foo.pl.md`
+#  Extract markdown from file and output to standalone file
+markpod bin/foo.pl --extract --outfile=bin/foo.pl.md
+```
 
 
 # DESCRIPTION
 
-markpod.pl scans a file for markdown formatted pod and - if found - converts it to pure
+markpod scans a file for markdown formatted pod and - if found - converts it to pure
 pod, and then appends it to the pod section of the file. It allows the user to write perl
 documentation in markdown format within a pod block - and then have it
 converted to "normal" pod for use with all standard utilities that expect
@@ -91,3 +92,4 @@ the same terms as the Perl 5 programming language system itself.
 Full license text is available at:
 
 <http://dev.perl.org/licenses/>
+
