@@ -13,3 +13,4 @@ LICENSE
 t/00-load.t
 INSTALL.md
 INSTALL
+lib/App/Markpod.pm.md                    
