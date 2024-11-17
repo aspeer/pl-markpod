@@ -156,8 +156,6 @@ sub markpod_inplace_update {
     #$ppi_doc_or ||= $self->markpod($fn) ||
     #  return err();
     my ($self, $fn)=@_;
-    use Carp qw(croak confess);
-    confess Dumper(\@_);
     my $ppi_doc_or=$self->ppi_doc_or()
         || return err();
 
